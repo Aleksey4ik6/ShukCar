@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Вход · ShukCar Mobile{% endblock %}
+{% block header_title %}Мобильный вход{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+  <h2>Войти в систему</h2>
+  <p class="muted">Используйте тот же логин и пароль, что и в desktop-версии.</p>
+
+  <form method="post" action="/mobile/login" class="stack-form">
+    <label>
+      <span>Логин</span>
+      <input type="text" name="login" autocomplete="username" value="{{ login_value or '' }}" required>
+    </label>
+
+    <label>
+      <span>Пароль</span>
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+
+    <button class="primary-button" type="submit">Войти</button>
+  </form>
+</section>
+{% endblock %}

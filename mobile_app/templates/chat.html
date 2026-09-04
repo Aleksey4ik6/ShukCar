@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Чат · ShukCar Mobile{% endblock %}
+{% block header_title %}Внутренний чат{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Комнаты</h2>
+  <div class="room-pills">
+    {% for room in rooms %}
+    <a class="room-pill {% if selected_room_id == room.id %}active{% endif %}" href="/mobile/chat?room_id={{ room.id }}">{{ room.title }}</a>
+    {% else %}
+    <span class="muted">Чаты отсутствуют.</span>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card chat-card">
+  <div class="section-head">
+    <h2>{{ selected_room.title if selected_room else 'Чат' }}</h2>
+  </div>
+
+  <div class="chat-feed" id="chat-feed" data-room-id="{{ selected_room_id or '' }}">
+    {% for message in messages %}
+    <article class="message-item">
+      <div class="message-meta">
+        <strong>{{ 'Система' if message.is_system else ((message.user.full_name or message.user.login) if message.user else 'Сотрудник') }}</strong>
+        <span>{{ message.created_at.strftime('%d.%m.%Y %H:%M') if message.created_at else '' }}</span>
+      </div>
+      <div class="message-body">{{ message.body }}</div>
+    </article>
+    {% else %}
+    <div class="empty-state">Сообщений пока нет.</div>
+    {% endfor %}
+  </div>
+
+  {% if selected_room_id %}
+  <form method="post" action="/mobile/chat/send" class="stack-form compact">
+    <input type="hidden" name="room_id" value="{{ selected_room_id }}">
+    <label>
+      <span>Сообщение</span>
+      <textarea name="body" rows="4" placeholder="Напишите сообщение..." required></textarea>
+    </label>
+    <button class="primary-button" type="submit">Отправить</button>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/mobile/static/chat.js"></script>
+{% endblock %}

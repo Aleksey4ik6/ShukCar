@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Автомобили · ShukCar Mobile{% endblock %}
+{% block header_title %}Автомобили{% endblock %}
+
+{% block content %}
+<section class="card">
+  <form method="get" action="/mobile/cars" class="search-form">
+    <input type="search" name="q" placeholder="VIN, статус, клиент..." value="{{ search or '' }}">
+    <button class="primary-button" type="submit">Найти</button>
+  </form>
+</section>
+
+<section class="list-stack">
+  {% for car in cars %}
+  <article class="card list-card">
+    <strong>{{ car.brand.name if car.brand else 'Без марки' }} {{ car.model.name if car.model else '' }}</strong>
+    <span class="muted">{{ car.vin or 'VIN не указан' }}</span>
+    <div class="inline-pairs">
+      <span class="chip">{{ car.status or 'Без статуса' }}</span>
+      <span class="chip alt">{{ car.deal_status or 'Без статуса сделки' }}</span>
+    </div>
+    <span class="muted">Клиент: {{ car.client.full_name if car.client else 'не привязан' }}</span>
+    <span class="muted">Двигатель: {{ car.engine_cc or 0 }} см³ · {{ car.horsepower or 0 }} л.с.</span>
+  </article>
+  {% else %}
+  <div class="card empty-state">Ничего не найдено.</div>
+  {% endfor %}
+</section>
+{% endblock %}

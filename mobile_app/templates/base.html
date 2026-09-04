@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}ShukCar Mobile{% endblock %}</title>
+  <link rel="stylesheet" href="/mobile/static/mobile.css">
+</head>
+<body>
+  <div class="mobile-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">ShukCar Mobile</div>
+        <h1>{% block header_title %}ShukCar{% endblock %}</h1>
+      </div>
+      {% if current_user %}
+      <form method="post" action="/mobile/logout">
+        <button class="ghost-button" type="submit">Выйти</button>
+      </form>
+      {% endif %}
+    </header>
+
+    <main class="page">
+      {% if current_user %}
+      <div class="welcome-line">{{ current_user.full_name or current_user.login }}</div>
+      {% endif %}
+
+      {% if error %}
+      <div class="alert danger">{{ error }}</div>
+      {% endif %}
+      {% if success %}
+      <div class="alert success">{{ success }}</div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    {% if current_user %}
+    <nav class="bottom-nav">
+      <a class="{% if active_page == 'dashboard' %}active{% endif %}" href="/mobile">Главная</a>
+      <a class="{% if active_page == 'cars' %}active{% endif %}" href="/mobile/cars">Авто</a>
+      <a class="{% if active_page == 'clients' %}active{% endif %}" href="/mobile/clients">Клиенты</a>
+      <a class="{% if active_page == 'chat' %}active{% endif %}" href="/mobile/chat">Чат</a>
+      <a class="{% if active_page == 'calculator' %}active{% endif %}" href="/mobile/calculator">Расчет</a>
+    </nav>
+    {% endif %}
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

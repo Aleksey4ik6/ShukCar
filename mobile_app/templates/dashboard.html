@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Главная · ShukCar Mobile{% endblock %}
+{% block header_title %}Рабочая область{% endblock %}
+
+{% block content %}
+<section class="metric-grid">
+  <article class="metric-card">
+    <span class="metric-label">Автомобили</span>
+    <strong>{{ car_count }}</strong>
+  </article>
+  <article class="metric-card">
+    <span class="metric-label">Клиенты</span>
+    <strong>{{ client_count }}</strong>
+  </article>
+  <article class="metric-card">
+    <span class="metric-label">Чаты</span>
+    <strong>{{ chat_count }}</strong>
+  </article>
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <h2>Свежие автомобили</h2>
+    <a href="/mobile/cars">Все</a>
+  </div>
+  <div class="list-stack">
+    {% for car in recent_cars %}
+    <article class="list-card">
+      <strong>{{ car.brand.name if car.brand else 'Без марки' }} {{ car.model.name if car.model else '' }}</strong>
+      <span class="muted">{{ car.vin or 'VIN не указан' }}</span>
+      <span class="chip">{{ car.status or 'Без статуса' }}</span>
+    </article>
+    {% else %}
+    <div class="empty-state">Пока нет автомобилей.</div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <h2>Свежие клиенты</h2>
+    <a href="/mobile/clients">Все</a>
+  </div>
+  <div class="list-stack">
+    {% for client in recent_clients %}
+    <article class="list-card">
+      <strong>{{ client.full_name }}</strong>
+      <span class="muted">{{ client.phone or 'Телефон не указан' }}</span>
+      <span class="muted">{{ client.registration_address or 'Адрес не указан' }}</span>
+    </article>
+    {% else %}
+    <div class="empty-state">Пока нет клиентов.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

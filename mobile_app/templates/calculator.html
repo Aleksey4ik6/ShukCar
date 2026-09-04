@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Калькулятор · ShukCar Mobile{% endblock %}
+{% block header_title %}Калькулятор{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Расчет привоза</h2>
+  <form method="post" action="/mobile/calculator" class="stack-form">
+    <div class="grid-two">
+      <label>
+        <span>Дата выпуска</span>
+        <input type="date" name="production_date" value="{{ form_data.production_date }}">
+      </label>
+      <label>
+        <span>Дата расчета</span>
+        <input type="date" name="clearance_date" value="{{ form_data.clearance_date }}">
+      </label>
+    </div>
+
+    <label>
+      <span>Возраст вручную</span>
+      <select name="age_override">
+        {% set options = age_options or [('', 'Определять по датам'), ('under_3', 'До 3 лет'), ('three_to_five', 'От 3 до 5 лет'), ('over_5', 'Старше 5 лет')] %}
+        {% for value, label in options %}
+        <option value="{{ value }}" {% if form_data.age_override == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <div class="grid-two">
+      <label>
+        <span>Объем двигателя, см³</span>
+        <input type="number" name="engine_cc" value="{{ form_data.engine_cc }}">
+      </label>
+      <label>
+        <span>Мощность, л.с.</span>
+        <input type="number" name="horsepower" value="{{ form_data.horsepower }}">
+      </label>
+    </div>
+
+    <h3>До границы</h3>
+    <div class="money-grid">
+      <label>
+        <span>Цена авто</span>
+        <input type="number" step="0.01" name="purchase_price" value="{{ form_data.purchase_price }}">
+      </label>
+      <label>
+        <span>Валюта</span>
+        <select name="purchase_currency">
+          {% for code in ['USD', 'JPY', 'EUR', 'RUB', 'CNY', 'KRW'] %}
+          <option value="{{ code }}" {% if form_data.purchase_currency == code %}selected{% endif %}>{{ code }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="money-grid">
+      <label>
+        <span>Аукцион / комиссия</span>
+        <input type="number" step="0.01" name="auction_fee" value="{{ form_data.auction_fee }}">
+      </label>
+      <label>
+        <span>Валюта</span>
+        <select name="auction_currency">
+          {% for code in ['JPY', 'USD', 'EUR', 'RUB', 'CNY', 'KRW'] %}
+          <option value="{{ code }}" {% if form_data.auction_currency == code %}selected{% endif %}>{{ code }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="money-grid">
+      <label>
+        <span>Экспортные расходы</span>
+        <input type="number" step="0.01" name="export_fee" value="{{ form_data.export_fee }}">
+      </label>
+      <label>
+        <span>Валюта</span>
+        <select name="export_currency">
+          {% for code in ['JPY', 'USD', 'EUR', 'RUB', 'CNY', 'KRW'] %}
+          <option value="{{ code }}" {% if form_data.export_currency == code %}selected{% endif %}>{{ code }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div class="money-grid">
+      <label>
+        <span>Доставка до границы</span>
+        <input type="number" step="0.01" name="delivery_to_border" value="{{ form_data.delivery_to_border }}">
+      </label>
+      <label>
+        <span>Валюта</span>
+        <select name="delivery_currency">
+          {% for code in ['USD', 'JPY', 'EUR', 'RUB', 'CNY', 'KRW'] %}
+          <option value="{{ code }}" {% if form_data.delivery_currency == code %}selected{% endif %}>{{ code }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <h3>После границы</h3>
+    <div class="grid-two">
+      <label><span>Брокер</span><input type="number" step="0.01" name="broker_fee" value="{{ form_data.broker_fee }}"></label>
+      <label><span>СБКТС</span><input type="number" step="0.01" name="sbkts_fee" value="{{ form_data.sbkts_fee }}"></label>
+      <label><span>ЭПТС</span><input type="number" step="0.01" name="epts_fee" value="{{ form_data.epts_fee }}"></label>
+      <label><span>ГЛОНАСС</span><input type="number" step="0.01" name="glonass_fee" value="{{ form_data.glonass_fee }}"></label>
+      <label><span>Логистика по РФ</span><input type="number" step="0.01" name="logistics_fee" value="{{ form_data.logistics_fee }}"></label>
+      <label><span>Услуги компании</span><input type="number" step="0.01" name="company_fee" value="{{ form_data.company_fee }}"></label>
+      <label><span>Прочие расходы</span><input type="number" step="0.01" name="other_fee" value="{{ form_data.other_fee }}"></label>
+    </div>
+
+    <button class="primary-button" type="submit">Рассчитать</button>
+  </form>
+</section>
+
+{% if result %}
+<section class="card">
+  <h2>Результат</h2>
+  <div class="result-list">
+    <div><span>Возраст авто</span><strong>{{ result.age_label }}</strong></div>
+    <div><span>Курс EUR</span><strong>{{ result.euro_rate }}</strong></div>
+    <div><span>До границы</span><strong>{{ result.pre_border }}</strong></div>
+    <div><span>Таможенная стоимость</span><strong>{{ result.customs_value }}</strong></div>
+    <div><span>Единая пошлина</span><strong>{{ result.duty }}</strong></div>
+    <div><span>Таможенный сбор</span><strong>{{ result.customs_fee }}</strong></div>
+    <div><span>Утилизационный сбор</span><strong>{{ result.util_fee }}</strong></div>
+    <div><span>После границы</span><strong>{{ result.local_costs }}</strong></div>
+    <div class="result-total"><span>Итого под ключ</span><strong>{{ result.total }}</strong></div>
+  </div>
+  <p class="muted">Правило пошлины: {{ result.duty_rule }}</p>
+</section>
+{% endif %}
+{% endblock %}

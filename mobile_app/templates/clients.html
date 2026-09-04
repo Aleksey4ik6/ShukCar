@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Клиенты · ShukCar Mobile{% endblock %}
+{% block header_title %}Клиенты{% endblock %}
+
+{% block content %}
+<section class="card">
+  <form method="get" action="/mobile/clients" class="search-form">
+    <input type="search" name="q" placeholder="ФИО, телефон, e-mail..." value="{{ search or '' }}">
+    <button class="primary-button" type="submit">Найти</button>
+  </form>
+</section>
+
+<section class="list-stack">
+  {% for client in clients %}
+  <article class="card list-card">
+    <strong>{{ client.full_name }}</strong>
+    <span class="muted">{{ client.phone or 'Телефон не указан' }}</span>
+    <span class="muted">{{ client.email or 'E-mail не указан' }}</span>
+    <span class="muted">{{ client.registration_address or 'Адрес не указан' }}</span>
+  </article>
+  {% else %}
+  <div class="card empty-state">Ничего не найдено.</div>
+  {% endfor %}
+</section>
+{% endblock %}
